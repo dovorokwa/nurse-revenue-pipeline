@@ -1,15 +1,66 @@
-# Nurse Revenue Ranking Pipeline
+⚙️ Architecture Overview
+Architecture Flow:
+Confluent Kafka → AWS S3 (Raw → Processed → Semantic) → AWS Lambda → AWS Glue → Snowflake → Power BI
 
-This project uses a Confluent Kafka -> AWS -> Snowflake architecture to stream, process, and visualize nurse revenue data.
 
-## Components
+A flowchart diagram illustrates the streaming ingestion from Kafka, AWS orchestration for ETL, Snowflake analytics, and Power BI visualization.
 
-- **Kafka** (Confluent Cloud): Ingest nurse data
-- **S3**: Store raw, processed, and semantic layers
-- **Lambda**: Trigger ETL workflows
-- **Glue**: Transform and rank nurse revenue
-- **Snowflake**: Final views for dashboards
-- **Power BI**: Visualize top-performing nurses
+🧩 Components
+🔁 Kafka (Confluent Cloud)
+Real-time ingestion of nurse data (e.g., shift logs, revenue per patient, time tracking).
+
+Kafka Connect pushes JSON events to AWS S3 using the S3 Sink Connector.
+
+🪣 Amazon S3
+Raw Layer: Stores raw JSON data received from Kafka.
+
+Processed Layer: Stores transformed/cleaned datasets.
+
+Semantic Layer: Final datasets ready for analytics.
+
+⚡ AWS Lambda
+Listens for new files in the S3 bucket.
+
+Triggers ETL jobs using AWS Glue.
+
+Handles small batch processing for near real-time transformation.
+
+🔄 AWS Glue
+Runs Spark-based ETL jobs to:
+
+Parse raw nurse records.
+
+Clean and transform the data.
+
+Compute metrics such as total revenue per nurse, patients attended, and average revenue per shift.
+
+Rank nurses by performance (RN, EN, AEN levels).
+
+Writes the transformed data back to the Semantic S3 layer or directly to Snowflake.
+
+❄️ Snowflake
+Acts as the enterprise data warehouse.
+
+Hosts curated views and tables for:
+
+Top-performing nurses.
+
+Monthly and quarterly revenue performance.
+
+Comparison across departments or shifts.
+
+📊 Power BI
+Connects to Snowflake for data visualization.
+
+Dashboards include:
+
+Nurse leaderboards by revenue.
+
+Filters by date, department, nurse type.
+
+Trends over time (monthly/weekly breakdown).
+
+
 
 ## Folder Structure
 
